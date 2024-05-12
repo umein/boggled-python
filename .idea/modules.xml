@@ -2,6 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../2023-2_9341-finteam2_python/.idea/ 2023-2_9341-finTeam2_Python.iml" filepath="$PROJECT_DIR$/../2023-2_9341-finteam2_python/.idea/ 2023-2_9341-finTeam2_Python.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/2023-2_9342-finteam2_Python.iml" filepath="$PROJECT_DIR$/.idea/2023-2_9342-finteam2_Python.iml" />
     </modules>
   </component>
