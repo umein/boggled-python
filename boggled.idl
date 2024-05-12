@@ -1,0 +1,72 @@
+module boggled {
+
+    exception InvalidCredentialsException {
+        string message;
+    };
+    exception UserNotFoundException {
+        string message;
+    };
+
+    exception InGameException {
+        string message;
+    };
+
+    exception LeaderboardException {
+        string message;
+    };
+
+    exception LoggedInUserException {
+        string message;
+    };
+
+    exception NotExistingWordException {
+        string message;
+    };
+
+    exception GameNotFoundException {
+        string message;
+    };
+
+    exception NotEnoughPlayersException {
+        string message;
+    };
+
+
+    struct Player {
+        long playerid;
+        string username;
+        long highscore;
+        long gamesPlayed;
+        long gamesWon;
+    };
+
+    struct RoundLetters {
+        sequence<wchar> letters;
+    };
+
+    struct Leaderboard {
+        sequence<Player> playerList;
+    };
+
+    interface Callback {
+        void serverShutdown();
+     };
+
+    interface PlayerServices {
+        long login(in string username, in string password, in Callback callback) raises (LoggedInUserException, UserNotFoundException, InvalidCredentialsException);
+        long getCurrentGame(in long playerid) raises (GameNotFoundException);
+        long waitingLobby(in long playerid) raises (NotEnoughPlayersException);
+        long startGame(in long playerid) raises (NotEnoughPlayersException);
+        RoundLetters getLetters (in long gameid) raises (GameNotFoundException);
+        long submitWords(in long playerid, in string word, in long gameid) raises (NotExistingWordException);
+        long getRoundTime(in long gameid) raises (GameNotFoundException);
+        long getRoundWinner (in long gameid, in long roundNum) raises (GameNotFoundException);
+        long getRoundScore (in long playerid, in long gameid, in long roundNum) raises (GameNotFoundException);
+        long getGameWinner (in long gameid) raises (GameNotFoundException);
+        long getGameScore (in long gameid, in long playerid) raises (GameNotFoundException);
+        Leaderboard viewLeaderboard() raises (LeaderboardException);
+        Player viewProfile(in long playerid) raises (UserNotFoundException);
+        void logout(in long playerid) raises (InGameException);
+    };
+
+};
