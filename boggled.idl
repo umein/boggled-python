@@ -6,7 +6,6 @@ module boggled {
     exception UserNotFoundException {
         string message;
     };
-
     exception InGameException {
         string message;
     };
@@ -40,33 +39,40 @@ module boggled {
         long gamesWon;
     };
 
+    struct PlayerData {
+        string username;
+        long score;
+    };
+
+    struct PlayerList {
+        sequence<PlayerData> players;
+    };
+
     struct RoundLetters {
         sequence<wchar> letters;
     };
 
-    struct Leaderboard {
-        sequence<Player> playerList;
-    };
-
-    interface Callback {
-        void serverShutdown();
-     };
-
     interface PlayerServices {
-        long login(in string username, in string password, in Callback callback) raises (LoggedInUserException, UserNotFoundException, InvalidCredentialsException);
+        long login(in string username, in string password) raises (LoggedInUserException, UserNotFoundException, InvalidCredentialsException);
         long getCurrentGame(in long playerid) raises (GameNotFoundException);
-        long waitingLobby(in long playerid) raises (NotEnoughPlayersException);
-        long startGame(in long playerid) raises (NotEnoughPlayersException);
+        long waitingLobby(in long playerid);
+        long getLobbySize();
+        long startGame() raises (NotEnoughPlayersException);
+        PlayerList getPlayers(in long gameid, in long roundNum) raises (GameNotFoundException);
         RoundLetters getLetters (in long gameid) raises (GameNotFoundException);
         long submitWords(in long playerid, in string word, in long gameid) raises (NotExistingWordException);
+        boolean isWordSubmitted (in long gameid, in long playerid, in string word) raises (GameNotFoundException);
+        long getRoundWaitingTime(in long gameid) raises (GameNotFoundException);
+        long getRoundNumber(in long gameid) raises (GameNotFoundException);
         long getRoundTime(in long gameid) raises (GameNotFoundException);
         long getRoundWinner (in long gameid, in long roundNum) raises (GameNotFoundException);
         long getRoundScore (in long playerid, in long gameid, in long roundNum) raises (GameNotFoundException);
         long getGameWinner (in long gameid) raises (GameNotFoundException);
         long getGameScore (in long gameid, in long playerid) raises (GameNotFoundException);
-        Leaderboard viewLeaderboard() raises (LeaderboardException);
+        PlayerList viewLeaderboard() raises (LeaderboardException);
         Player viewProfile(in long playerid) raises (UserNotFoundException);
         void logout(in long playerid) raises (InGameException);
+        boolean updateHighScore(in long playerid, in long newScore);
+        string getUsernameByID(in long playerid) raises (UserNotFoundException);
     };
-
 };
