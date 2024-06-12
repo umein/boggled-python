@@ -7,16 +7,6 @@ class PlayerClient:
         self.connection = Connection()
         self.player_service = self.connection.get_player_service()
 
-    # login function
-    def login(self, username, password):
-        try:
-            return self.player_service.login(username, password)
-            print("Login successful.")
-        except UserNotFoundException as e:
-            print("User not found:", e)
-        except Exception as e:
-            print("An error occurred:", e)
-
     def menu(self):
             while True:
                 print ("\n--- Boggled Game Menu ---")
@@ -33,12 +23,38 @@ class PlayerClient:
                 elif choice == '3':
                     self.start_game()
                 elif choice == '4':
-                    self.exit_game()
+                    if self.exit_game():
+                        print("Exiting the Game")
+                        break
                 else:
                     print ("Invalid input. Please try again." )
 
+    # login function
+    def login(self):
+        try:
+            print("Username: ")
+            username = input()
+            print("Password: ")
+            password = input()
+            return self.player_service.login(username, password)
+            print("Login successful.")
+        except UserNotFoundException as e:
+            print("User not found:", e)
+        except Exception as e:
+            print("An error occurred:", e)
+
     def leaderboard(self):
         print("---- Leaderboard ----")
+        try:
+            leaderboard = self.player_service.viewLeaderboard()
+            if not leaderboard.players:
+                print("Leaderboard is empty")
+            else:
+                print("Leaderboard:")
+                for player in leaderboard.players:
+                    print(f"Player: {player.username}, Score: {player.score}")
+        except Exception as e:
+            print("An error occurred:", e)
         self.menu()
         #TODO
 
@@ -56,26 +72,25 @@ class PlayerClient:
         while True:
             confirm = input ("Are you sure you want to exit the game? (y/n): ")
             if confirm == 'y':
+                self.player_service.logout(loggedinuser)
                 print ("Exiting the game. Godbless. Ingat Ka. Mwa")
-                return
+                return False
             elif confirm == 'n':
                 print ("Returning to menu...")
                 self.menu()
+                return True
             else:
                 print ("Invalid input. Please enter 'y' for yes or 'n' for no.")
 
 # login method invocation
 if __name__ == "__main__":
     client = PlayerClient()
-    loggedinuser = None
-    while not loggedinuser:
-        print("\nUsername: ")
-        username = input()
-        print("Password: ")
-        password = input()
-        loggedinuser = client.login(username, password)
-        if not loggedinuser:
-            print ("Invalid credentials. Please please please dont prove em right.")
-    print(loggedinuser)
-    if loggedinuser:
-        client.menu()
+    login_status = False
+    while True:
+        if not login_status:
+            print("Please Login")
+            loggedinuser = client.login()
+            login_status = loggedinuser is not None
+
+        if login_status:
+            client.menu()
