@@ -1,8 +1,8 @@
 import sys
 
-# add or modify if sys variables isn't detected
-#sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/python")
-#sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/x86_win32")
+# add or modify if sys variables isn't detected 
+sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/python")
+sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/x86_win32")
 
 from connection import Connection
 from boggled import UserNotFoundException
@@ -16,7 +16,7 @@ class PlayerClient:
     # login function
     def login(self, username, password):
         try:
-            self.player_service.login(username, password)
+            return self.player_service.login(username, password)
             print("Login successful.")
         except UserNotFoundException as e:
             print("User not found:", e)
@@ -30,5 +30,6 @@ if __name__ == "__main__":
     username = input()
     print("Password: ")
     password = input()
-    playerid = client.login(username, password)
-    print(playerid)
+    loggedinuser = client.login(username, password)
+    print(loggedinuser)
+
