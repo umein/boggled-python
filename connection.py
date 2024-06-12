@@ -1,8 +1,9 @@
 import sys
 
 # add or modify if sys variables isn't detected
-sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/python")
-sys.path.append("C:/Users/czyl/Downloads/omniORB/omniORB-4.3.2/lib/x86_win32")
+# sys.path.append("<TOP-LEVEL_DIRECTORY>/omniORB/omniORB-4.3.2/lib/python")
+# sys.path.append("<TOP-LEVEL_DIRECTORY>/omniORB-4.3.2/lib/x86_win32")
+# else add to PYTHONPATH environmental system variable and re-launch IDE
 
 from omniORB import CORBA
 import CosNaming
