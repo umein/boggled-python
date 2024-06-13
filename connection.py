@@ -12,7 +12,7 @@ from boggled import PlayerServices
 class Connection:
     def __init__(self):
         # initialize orb
-        args = ["-ORBInitRef", "NameService=corbaname::localhost:2000"]
+        args = ["-ORBInitRef", "NameService=corbaname::localhost:1050"]
         self.orb = CORBA.ORB_init(args)
 
         # reference to the name service
