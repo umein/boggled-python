@@ -6,6 +6,7 @@ class PlayerClient:
     def __init__(self):
         self.connection = Connection()
         self.player_service = self.connection.get_player_service()
+        self.loggedinuser = None
 
     def menu(self):
             while True:
@@ -56,12 +57,26 @@ class PlayerClient:
         except Exception as e:
             print("An error occurred:", e)
         self.menu()
-        #TODO
 
     def player_account(self):
         print("------ Account ------")
+        try:
+            if self.loggedinuser is None:
+                raise UserNotFoundException("No user is currently logged in.")
+            user_details = self.player_service.viewProfile(self.loggedinuser)
+            
+            print(f"Name: {user_details.username}")
+            print(f"User ID: {user_details.playerid}")
+            print(f"Best Score: {user_details.highscore}")
+            print(f"Total Games: {user_details.gamesPlayed}")
+            print(f"Total Wins: {user_details.gamesWon}")
+            
+        except UserNotFoundException as e:
+            print ("User not found:", e.message)
+        except Exception as e:
+            print ("An error occurred:", e)
+
         self.menu()
-        #TODO
 
     def start_game(self):
         print("Waiting for players...")
@@ -71,11 +86,12 @@ class PlayerClient:
     def exit_game(self):
         while True:
             confirm = input ("Are you sure you want to exit the game? (y/n): ")
-            if confirm == 'y':
-                self.player_service.logout(loggedinuser)
+            if confirm.lower() == 'y':
+                self.player_service.logout(self.loggedinuser)
                 print ("Exiting the game. Godbless. Ingat Ka. Mwa")
+                exit()
                 return False
-            elif confirm == 'n':
+            elif confirm.lower() == 'n':
                 print ("Returning to menu...")
                 self.menu()
                 return True
@@ -89,8 +105,8 @@ if __name__ == "__main__":
     while True:
         if not login_status:
             print("Please Login")
-            loggedinuser = client.login()
-            login_status = loggedinuser is not None
+            client.loggedinuser = client.login()
+            login_status = client.loggedinuser is not None
 
         if login_status:
             client.menu()
