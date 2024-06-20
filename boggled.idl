@@ -54,25 +54,18 @@ module boggled {
 
     interface PlayerServices {
         long login(in string username, in string password) raises (LoggedInUserException, UserNotFoundException, InvalidCredentialsException);
-        long getCurrentGame(in long playerid) raises (GameNotFoundException);
-        long waitingLobby(in long playerid);
+        long waitingLobby(in long playerID);
         long getLobbySize();
-        long startGame() raises (NotEnoughPlayersException);
-        PlayerList getPlayers(in long gameid, in long roundNum) raises (GameNotFoundException);
-        RoundLetters getLetters (in long gameid) raises (GameNotFoundException);
-        long submitWords(in long playerid, in string word, in long gameid) raises (NotExistingWordException);
-        boolean isWordSubmitted (in long gameid, in long playerid, in string word) raises (GameNotFoundException);
-        long getRoundWaitingTime(in long gameid) raises (GameNotFoundException);
-        long getRoundNumber(in long gameid) raises (GameNotFoundException);
-        long getRoundTime(in long gameid) raises (GameNotFoundException);
-        long getRoundWinner (in long gameid, in long roundNum) raises (GameNotFoundException);
-        long getRoundScore (in long playerid, in long gameid, in long roundNum) raises (GameNotFoundException);
-        long getGameWinner (in long gameid) raises (GameNotFoundException);
-        long getGameScore (in long gameid, in long playerid) raises (GameNotFoundException);
+        void startGame(in long playerID) raises (NotEnoughPlayersException, GameNotFoundException);
+        PlayerList getPlayers(in long playerID, in long roundNum) raises (GameNotFoundException);
+        RoundLetters getLetters (in long playerID) raises (GameNotFoundException);
+        long submitWords(in long playerID, in string word) raises (NotExistingWordException, GameNotFoundException);
+        boolean isWordSubmitted (in long playerID, in string word) raises (GameNotFoundException);
+        long getRoundWaitingTime(in long playerID) raises (GameNotFoundException);
+        long getRoundTime(in long playerID) raises (GameNotFoundException);
+        PlayerData getGameWinner (in long playerID) raises (GameNotFoundException);
         PlayerList viewLeaderboard() raises (LeaderboardException);
-        Player viewProfile(in long playerid) raises (UserNotFoundException);
-        void logout(in long playerid) raises (InGameException);
-        boolean updateHighScore(in long playerid, in long newScore);
-        string getUsernameByID(in long playerid) raises (UserNotFoundException);
+        Player viewProfile(in long playerID) raises (UserNotFoundException);
+        void logout(in long playerID) raises (InGameException);
     };
 };
