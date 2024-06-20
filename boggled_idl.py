@@ -223,26 +223,19 @@ omniORB.registerType(PlayerServices._NP_RepositoryId, _0_boggled._d_PlayerServic
 
 # PlayerServices operations and attributes
 PlayerServices._d_login = (((omniORB.tcInternal.tv_string,0), (omniORB.tcInternal.tv_string,0)), (omniORB.tcInternal.tv_long, ), {_0_boggled.LoggedInUserException._NP_RepositoryId: _0_boggled._d_LoggedInUserException, _0_boggled.UserNotFoundException._NP_RepositoryId: _0_boggled._d_UserNotFoundException, _0_boggled.InvalidCredentialsException._NP_RepositoryId: _0_boggled._d_InvalidCredentialsException})
-PlayerServices._d_getCurrentGame = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_waitingLobby = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), None)
 PlayerServices._d_getLobbySize = ((), (omniORB.tcInternal.tv_long, ), None)
-PlayerServices._d_startGame = ((), (omniORB.tcInternal.tv_long, ), {_0_boggled.NotEnoughPlayersException._NP_RepositoryId: _0_boggled._d_NotEnoughPlayersException})
+PlayerServices._d_startGame = ((omniORB.tcInternal.tv_long, ), (), {_0_boggled.NotEnoughPlayersException._NP_RepositoryId: _0_boggled._d_NotEnoughPlayersException, _0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_getPlayers = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.typeMapping["IDL:boggled/PlayerList:1.0"], ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_getLetters = ((omniORB.tcInternal.tv_long, ), (omniORB.typeMapping["IDL:boggled/RoundLetters:1.0"], ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_submitWords = ((omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0), omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), {_0_boggled.NotExistingWordException._NP_RepositoryId: _0_boggled._d_NotExistingWordException})
-PlayerServices._d_isWordSubmitted = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0)), (omniORB.tcInternal.tv_boolean, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
+PlayerServices._d_submitWords = ((omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0)), (omniORB.tcInternal.tv_long, ), {_0_boggled.NotExistingWordException._NP_RepositoryId: _0_boggled._d_NotExistingWordException, _0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
+PlayerServices._d_isWordSubmitted = ((omniORB.tcInternal.tv_long, (omniORB.tcInternal.tv_string,0)), (omniORB.tcInternal.tv_boolean, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_getRoundWaitingTime = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_getRoundNumber = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_getRoundTime = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_getRoundWinner = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_getRoundScore = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_getGameWinner = ((omniORB.tcInternal.tv_long, ), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
-PlayerServices._d_getGameScore = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_long, ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
+PlayerServices._d_getGameWinner = ((omniORB.tcInternal.tv_long, ), (omniORB.typeMapping["IDL:boggled/PlayerData:1.0"], ), {_0_boggled.GameNotFoundException._NP_RepositoryId: _0_boggled._d_GameNotFoundException})
 PlayerServices._d_viewLeaderboard = ((), (omniORB.typeMapping["IDL:boggled/PlayerList:1.0"], ), {_0_boggled.LeaderboardException._NP_RepositoryId: _0_boggled._d_LeaderboardException})
 PlayerServices._d_viewProfile = ((omniORB.tcInternal.tv_long, ), (omniORB.typeMapping["IDL:boggled/Player:1.0"], ), {_0_boggled.UserNotFoundException._NP_RepositoryId: _0_boggled._d_UserNotFoundException})
 PlayerServices._d_logout = ((omniORB.tcInternal.tv_long, ), (), {_0_boggled.InGameException._NP_RepositoryId: _0_boggled._d_InGameException})
-PlayerServices._d_updateHighScore = ((omniORB.tcInternal.tv_long, omniORB.tcInternal.tv_long), (omniORB.tcInternal.tv_boolean, ), None)
-PlayerServices._d_getUsernameByID = ((omniORB.tcInternal.tv_long, ), ((omniORB.tcInternal.tv_string,0), ), {_0_boggled.UserNotFoundException._NP_RepositoryId: _0_boggled._d_UserNotFoundException})
 
 # PlayerServices object reference
 class _objref_PlayerServices (CORBA.Object):
@@ -253,9 +246,6 @@ class _objref_PlayerServices (CORBA.Object):
 
     def login(self, *args):
         return self._obj.invoke("login", _0_boggled.PlayerServices._d_login, args)
-
-    def getCurrentGame(self, *args):
-        return self._obj.invoke("getCurrentGame", _0_boggled.PlayerServices._d_getCurrentGame, args)
 
     def waitingLobby(self, *args):
         return self._obj.invoke("waitingLobby", _0_boggled.PlayerServices._d_waitingLobby, args)
@@ -281,23 +271,11 @@ class _objref_PlayerServices (CORBA.Object):
     def getRoundWaitingTime(self, *args):
         return self._obj.invoke("getRoundWaitingTime", _0_boggled.PlayerServices._d_getRoundWaitingTime, args)
 
-    def getRoundNumber(self, *args):
-        return self._obj.invoke("getRoundNumber", _0_boggled.PlayerServices._d_getRoundNumber, args)
-
     def getRoundTime(self, *args):
         return self._obj.invoke("getRoundTime", _0_boggled.PlayerServices._d_getRoundTime, args)
 
-    def getRoundWinner(self, *args):
-        return self._obj.invoke("getRoundWinner", _0_boggled.PlayerServices._d_getRoundWinner, args)
-
-    def getRoundScore(self, *args):
-        return self._obj.invoke("getRoundScore", _0_boggled.PlayerServices._d_getRoundScore, args)
-
     def getGameWinner(self, *args):
         return self._obj.invoke("getGameWinner", _0_boggled.PlayerServices._d_getGameWinner, args)
-
-    def getGameScore(self, *args):
-        return self._obj.invoke("getGameScore", _0_boggled.PlayerServices._d_getGameScore, args)
 
     def viewLeaderboard(self, *args):
         return self._obj.invoke("viewLeaderboard", _0_boggled.PlayerServices._d_viewLeaderboard, args)
@@ -307,12 +285,6 @@ class _objref_PlayerServices (CORBA.Object):
 
     def logout(self, *args):
         return self._obj.invoke("logout", _0_boggled.PlayerServices._d_logout, args)
-
-    def updateHighScore(self, *args):
-        return self._obj.invoke("updateHighScore", _0_boggled.PlayerServices._d_updateHighScore, args)
-
-    def getUsernameByID(self, *args):
-        return self._obj.invoke("getUsernameByID", _0_boggled.PlayerServices._d_getUsernameByID, args)
 
 omniORB.registerObjref(PlayerServices._NP_RepositoryId, _objref_PlayerServices)
 _0_boggled._objref_PlayerServices = _objref_PlayerServices
@@ -324,7 +296,7 @@ class PlayerServices (PortableServer.Servant):
     _NP_RepositoryId = _0_boggled.PlayerServices._NP_RepositoryId
 
 
-    _omni_op_d = {"login": _0_boggled.PlayerServices._d_login, "getCurrentGame": _0_boggled.PlayerServices._d_getCurrentGame, "waitingLobby": _0_boggled.PlayerServices._d_waitingLobby, "getLobbySize": _0_boggled.PlayerServices._d_getLobbySize, "startGame": _0_boggled.PlayerServices._d_startGame, "getPlayers": _0_boggled.PlayerServices._d_getPlayers, "getLetters": _0_boggled.PlayerServices._d_getLetters, "submitWords": _0_boggled.PlayerServices._d_submitWords, "isWordSubmitted": _0_boggled.PlayerServices._d_isWordSubmitted, "getRoundWaitingTime": _0_boggled.PlayerServices._d_getRoundWaitingTime, "getRoundNumber": _0_boggled.PlayerServices._d_getRoundNumber, "getRoundTime": _0_boggled.PlayerServices._d_getRoundTime, "getRoundWinner": _0_boggled.PlayerServices._d_getRoundWinner, "getRoundScore": _0_boggled.PlayerServices._d_getRoundScore, "getGameWinner": _0_boggled.PlayerServices._d_getGameWinner, "getGameScore": _0_boggled.PlayerServices._d_getGameScore, "viewLeaderboard": _0_boggled.PlayerServices._d_viewLeaderboard, "viewProfile": _0_boggled.PlayerServices._d_viewProfile, "logout": _0_boggled.PlayerServices._d_logout, "updateHighScore": _0_boggled.PlayerServices._d_updateHighScore, "getUsernameByID": _0_boggled.PlayerServices._d_getUsernameByID}
+    _omni_op_d = {"login": _0_boggled.PlayerServices._d_login, "waitingLobby": _0_boggled.PlayerServices._d_waitingLobby, "getLobbySize": _0_boggled.PlayerServices._d_getLobbySize, "startGame": _0_boggled.PlayerServices._d_startGame, "getPlayers": _0_boggled.PlayerServices._d_getPlayers, "getLetters": _0_boggled.PlayerServices._d_getLetters, "submitWords": _0_boggled.PlayerServices._d_submitWords, "isWordSubmitted": _0_boggled.PlayerServices._d_isWordSubmitted, "getRoundWaitingTime": _0_boggled.PlayerServices._d_getRoundWaitingTime, "getRoundTime": _0_boggled.PlayerServices._d_getRoundTime, "getGameWinner": _0_boggled.PlayerServices._d_getGameWinner, "viewLeaderboard": _0_boggled.PlayerServices._d_viewLeaderboard, "viewProfile": _0_boggled.PlayerServices._d_viewProfile, "logout": _0_boggled.PlayerServices._d_logout}
 
 PlayerServices._omni_skeleton = PlayerServices
 _0_boggled__POA.PlayerServices = PlayerServices

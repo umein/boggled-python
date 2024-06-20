@@ -1,6 +1,9 @@
 import threading
 import time
+import os
+os.environ['ORBdebugLevel'] = '10'
 
+from omniORB import CORBA
 from connection import Connection
 from boggled import UserNotFoundException, NotEnoughPlayersException, GameNotFoundException
 
@@ -54,7 +57,7 @@ class PlayerClient:
 
     # leaderboard function
     def leaderboard(self):
-        print("---- Leaderboard ----")
+        print("\n---- Leaderboard ----")
         try:
             leaderboard = self.player_service.viewLeaderboard()
             if not leaderboard.players:
@@ -69,7 +72,7 @@ class PlayerClient:
 
     # profile function
     def player_account(self):
-        print("------ Account ------")
+        print("\n------ Account ------")
         try:
             if self.loggedinuser is None:
                 raise UserNotFoundException("No user is currently logged in.")
@@ -104,10 +107,10 @@ class PlayerClient:
                     self.remaining_time = self.player_service.waitingLobby(self.loggedinuser)
                     self.people_in_lobby = self.player_service.getLobbySize()
 
-                    if old_time != self.remaining_time:
+                    if old_time!= self.remaining_time:
                         print(f"REMAINING TIME: {self.remaining_time} secs")
 
-                    if self.people_in_lobby != curr_players:
+                    if self.people_in_lobby!= curr_players:
                         print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
 
                     time.sleep(1)
@@ -116,6 +119,7 @@ class PlayerClient:
                     raise NotEnoughPlayersException("Not enough players to start the game")
 
                 self.round_number = 1
+                print("Attempting to start the game...")
                 self.player_service.startGame(self.loggedinuser)
 
                 while not self.game_has_winner():
@@ -124,6 +128,9 @@ class PlayerClient:
                 print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
             except NotEnoughPlayersException as ex:
                 print("Not enough players to start the game:", ex)
+                self.menu() 
+            except CORBA.SystemException as ex:
+                print(f"A CORBA system exception occurred: {ex}")
             except Exception as e:
                 print(f"An error occurred: {e}")
 
