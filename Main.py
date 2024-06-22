@@ -1,7 +1,7 @@
 import threading
 import time
 import os
-os.environ['ORBdebugLevel'] = '10'
+os.environ['ORBdebugLevel'] = '40'
 
 from omniORB import CORBA
 from connection import Connection
@@ -17,6 +17,7 @@ class PlayerClient:
         self.people_in_lobby = 0
         self.round_number = 1
         self.score = 0
+        self.game_winner = None
 
     # menu
     def menu(self):
@@ -121,6 +122,7 @@ class PlayerClient:
                 self.round_number = 1
                 print("Attempting to start the game...")
                 self.player_service.startGame(self.loggedinuser)
+                self.play_round()
 
                 while not self.game_has_winner():
                     self.play_round()
@@ -158,6 +160,13 @@ class PlayerClient:
                 time.sleep(1)
 
             print("Time's up")
+
+            while True:
+                word = input("Enter a word: ")
+                if word.lower() == 'exit':
+                    break
+                self.submit_word(word)
+            
             game_winner = self.player_service.getGameWinner(self.loggedinuser)
 
             if game_winner.username == "none":
@@ -186,16 +195,50 @@ class PlayerClient:
             game_letters = self.player_service.getLetters(self.loggedinuser)
             print("Generated letters:")
             retrieved_letters = game_letters.letters
-            print("Retrieved letters: ", "".join(retrieved_letters))
+            print("Retrieved letters:", "".join(retrieved_letters))
             self.populate_letters(retrieved_letters)
+            return game_letters
         except GameNotFoundException as ex:
             print("Game not found:", ex)
+            raise ex
         except Exception as e:
             print("An error occurred while generating letters:", e)
+            raise e
 
     # populate letters function
     def populate_letters(self, letters):
-        print("Letters for the round: ", " ".join(letters))
+        grid_size = 5  
+        grid = []
+        for i in range (grid_size):
+            row = []
+            for j in range (grid_size):
+                index = i * grid_size + j
+                if index < len (letters):
+                    row.append (letters[index])
+                else:
+                    row.append (' ')  
+            grid.append (row)
+
+        print ("+-----------------+-------------------+")
+        print ("|     Letters     |     Words Sent    |")
+        print ("+-----------------+-------------------+")
+        self.sent_words = []
+        for i, row in enumerate(grid, 1):
+            letter_str = " ".join(row)
+            word_str = ""
+            print (f"| {letter_str:<15} | {word_str:<15} |")
+        print ("+-----------------+-------------------+")
+
+    def submit_word(self, word):
+        try:
+            score = self.player_service.submitWords(self.loggedinuser.playerid, word)
+            print(f"Word '{word}' sent successfully! Your score is {score}.")
+        except NotExistingWordException as e:
+            print(f"Error: {e}")
+        except GameNotFoundException as e:
+            print(f"Error: {e}")
+        except Exception as e:
+            print(f"An error occurred: {e}")
 
     # game winner function
     def game_has_winner(self):
