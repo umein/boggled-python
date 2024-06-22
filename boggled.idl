@@ -53,14 +53,16 @@ module boggled {
     };
 
     interface PlayerServices {
+        typedef sequence <char> CharSeq;
+        typedef sequence <long> IntSeq;
+        typedef sequence <string> StringSeq;
         long login(in string username, in string password) raises (LoggedInUserException, UserNotFoundException, InvalidCredentialsException);
         long waitingLobby(in long playerID);
         long getLobbySize();
         void startGame(in long playerID) raises (NotEnoughPlayersException, GameNotFoundException);
         PlayerList getPlayers(in long playerID, in long roundNum) raises (GameNotFoundException);
-        RoundLetters getLetters (in long playerID) raises (GameNotFoundException);
+        CharSeq getLetters(in long playerID) raises (GameNotFoundException);
         long submitWords(in long playerID, in string word) raises (NotExistingWordException, GameNotFoundException);
-        boolean isWordSubmitted (in long playerID, in string word) raises (GameNotFoundException);
         long getRoundWaitingTime(in long playerID) raises (GameNotFoundException);
         long getRoundTime(in long playerID) raises (GameNotFoundException);
         PlayerData getGameWinner (in long playerID) raises (GameNotFoundException);
