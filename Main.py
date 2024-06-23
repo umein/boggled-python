@@ -5,7 +5,7 @@ os.environ['ORBdebugLevel'] = '40'
 
 from omniORB import CORBA
 from connection import Connection
-from boggled import UserNotFoundException, NotEnoughPlayersException, GameNotFoundException
+from boggled import UserNotFoundException, NotEnoughPlayersException, GameNotFoundException, NotExistingWordException
 
 class PlayerClient:
     # establish connection to the server
@@ -49,8 +49,13 @@ class PlayerClient:
             username = input()
             print("Password: ")
             password = input()
-            return self.player_service.login(username, password)
+            player_data = self.player_service.login(username, password)
+            if isinstance(player_data, int):
+                player_data = {'playerid': player_data}
+            self.loggedinuser = player_data
+            self.loggedinuser_id = player_data['playerid']
             print("Login successful.")
+            return player_data
         except UserNotFoundException as e:
             print("User not found:", e)
         except Exception as e:
@@ -94,90 +99,74 @@ class PlayerClient:
 
     #start game function
     def start_game(self):
-        def background_task():
-            try:
-                self.remaining_time = self.player_service.waitingLobby(self.loggedinuser)
+        self.remaining_time = self.player_service.waitingLobby(int(self.loggedinuser['playerid']))
+        print(f"REMAINING TIME: {self.remaining_time} secs")
+        self.people_in_lobby = self.player_service.getLobbySize()
+        print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
+
+        while self.remaining_time > 0:
+            old_time = self.remaining_time
+            curr_players = self.people_in_lobby
+
+            self.remaining_time = self.player_service.waitingLobby(int(self.loggedinuser['playerid']))
+            self.people_in_lobby = self.player_service.getLobbySize()
+
+            if old_time!= self.remaining_time:
                 print(f"REMAINING TIME: {self.remaining_time} secs")
-                self.people_in_lobby = self.player_service.getLobbySize()
+
+            if self.people_in_lobby!= curr_players:
                 print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
 
-                while self.remaining_time > 0:
-                    old_time = self.remaining_time
-                    curr_players = self.people_in_lobby
+            time.sleep(1)
 
-                    self.remaining_time = self.player_service.waitingLobby(self.loggedinuser)
-                    self.people_in_lobby = self.player_service.getLobbySize()
+        if self.people_in_lobby < 2:
+            raise NotEnoughPlayersException("Not enough players to start the game")
 
-                    if old_time!= self.remaining_time:
-                        print(f"REMAINING TIME: {self.remaining_time} secs")
+        self.round_number = 1
+        print("Attempting to start the game...")
+        self.player_service.startGame(self.loggedinuser['playerid'])
+        self.play_round()
 
-                    if self.people_in_lobby!= curr_players:
-                        print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
+        while not self.game_has_winner():
+            self.play_round()
 
-                    time.sleep(1)
+        print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
+        self.exit_game()
 
-                if self.people_in_lobby < 2:
-                    raise NotEnoughPlayersException("Not enough players to start the game")
-
-                self.round_number = 1
-                print("Attempting to start the game...")
-                self.player_service.startGame(self.loggedinuser)
-                self.play_round()
-
-                while not self.game_has_winner():
-                    self.play_round()
-
-                print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
-            except NotEnoughPlayersException as ex:
-                print("Not enough players to start the game:", ex)
-                self.menu() 
-            except CORBA.SystemException as ex:
-                print(f"A CORBA system exception occurred: {ex}")
-            except Exception as e:
-                print(f"An error occurred: {e}")
-
-        game_thread = threading.Thread(target=background_task)
-        game_thread.start()
-
-    #play round function
     def play_round(self):
         try:
             print(f"START GAME FOR: {self.loggedinuser}")
             self.score = 0
 
             self.generate_letters()
-            round_remaining_time = self.player_service.getRoundTime(self.loggedinuser)
+            round_remaining_time = self.player_service.getRoundTime(self.loggedinuser['playerid'])
 
-            while round_remaining_time != 0:
+            while round_remaining_time > 0:
                 old_time = round_remaining_time
-                round_remaining_time = self.player_service.getRoundTime(self.loggedinuser)
+                round_remaining_time = self.player_service.getRoundTime(self.loggedinuser['playerid'])
 
-                players = self.player_service.getPlayers(self.loggedinuser, self.round_number).players
 
-                if old_time != round_remaining_time:
+                if old_time!= round_remaining_time:
                     print(f"ROUND TIME: {round_remaining_time} secs")
+
+                word = input("Enter a word: ")
+                self.submit_word(word)
 
                 time.sleep(1)
 
             print("Time's up")
 
-            while True:
-                word = input("Enter a word: ")
-                if word.lower() == 'exit':
-                    break
-                self.submit_word(word)
-            
-            game_winner = self.player_service.getGameWinner(self.loggedinuser)
+            game_winner = self.player_service.getGameWinner(self.loggedinuser['playerid'])
 
             if game_winner.username == "none":
                 self.round_number += 1
-                in_between_rounds_time = self.player_service.getRoundWaitingTime(self.loggedinuser)
+                in_between_rounds_time = self.player_service.getRoundWaitingTime(self.loggedinuser['playerid'])
 
-                while in_between_rounds_time != 0:
+                while in_between_rounds_time > 0:
                     old_time = in_between_rounds_time
-                    in_between_rounds_time = self.player_service.getRoundWaitingTime(self.loggedinuser)
+                    in_between_rounds_time = self.player_service.getRoundWaitingTime(self.loggedinuser['playerid'])
 
-                    if old_time != in_between_rounds_time:
+                    if old_time!= in_between_rounds_time:
                         print(f"IN BETWEEN ROUNDS TIME: {in_between_rounds_time} secs")
 
                     time.sleep(1)
@@ -192,7 +181,7 @@ class PlayerClient:
     # generate letters function
     def generate_letters(self):
         try:
-            game_letters = self.player_service.getLetters(self.loggedinuser)
+            game_letters = self.player_service.getLetters(self.loggedinuser['playerid'])
             print("Generated letters:")
             retrieved_letters = game_letters.letters
             print("Retrieved letters:", "".join(retrieved_letters))
@@ -203,7 +192,6 @@ class PlayerClient:
             raise ex
         except Exception as e:
             print("An error occurred while generating letters:", e)
-            raise e
 
     # populate letters function
     def populate_letters(self, letters):
@@ -231,7 +219,7 @@ class PlayerClient:
 
     def submit_word(self, word):
         try:
-            score = self.player_service.submitWords(self.loggedinuser.playerid, word)
+            score = self.player_service.submitWords(self.loggedinuser['playerid'], word)
             print (f"Word '{word}' sent successfully! Your score is {score}.")
         except NotExistingWordException as e:
             print (f"Error: {e}")
@@ -243,7 +231,7 @@ class PlayerClient:
     # game winner function
     def game_has_winner(self):
         try:
-            player_data = self.player_service.getGameWinner(self.loggedinuser)
+            player_data = self.player_service.getGameWinner(self.loggedinuser['playerid'])
             if player_data.username == "none":
                 return False
             else:
@@ -261,7 +249,7 @@ class PlayerClient:
         while True:
             confirm = input ("Are you sure you want to exit the game? (y/n): ")
             if confirm.lower() == 'y':
-                self.player_service.logout(self.loggedinuser)
+                self.player_service.logout(self.loggedinuser['playerid'])
                 print ("Exiting the game. Godbless. Ingat Ka. Mwa")
                 exit()
                 return False
