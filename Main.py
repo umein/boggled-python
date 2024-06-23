@@ -17,6 +17,7 @@ class PlayerClient:
         self.people_in_lobby = 0
         self.round_number = 1
         self.score = 0
+        self.generated_letters = []
         self.game_winner = None
 
     # menu
@@ -149,6 +150,9 @@ class PlayerClient:
                 if old_time!= round_remaining_time:
                     print(f"ROUND TIME: {round_remaining_time} secs")
 
+                if round_remaining_time == 0:
+                    break
+
                 word = input("Enter a word: ")
                 self.submit_word(word)
 
@@ -183,6 +187,7 @@ class PlayerClient:
         try:
             game_letters = self.player_service.getLetters(self.loggedinuser['playerid'])
             print("Generated letters:")
+            self.generated_letters = game_letters.letters
             retrieved_letters = game_letters.letters
             print("Retrieved letters:", "".join(retrieved_letters))
             self.populate_letters(retrieved_letters)
@@ -192,6 +197,19 @@ class PlayerClient:
             raise ex
         except Exception as e:
             print("An error occurred while generating letters:", e)
+
+    
+    def can_form_word(self, word):
+
+        word_lower = word.lower()
+        available_letters_lower = [char.lower() for char in self.generated_letters]
+
+        for char in word_lower:
+            if char in available_letters_lower:
+                available_letters_lower.remove(char)
+            else:
+                return False
+            return True
 
     # populate letters function
     def populate_letters(self, letters):
@@ -219,6 +237,9 @@ class PlayerClient:
 
     def submit_word(self, word):
         try:
+            if not self.can_form_word(word):
+                print(f"Word '{word}' cannot be formed with the given letters.")
+                return
             score = self.player_service.submitWords(self.loggedinuser['playerid'], word)
             print (f"Word '{word}' sent successfully! Your score is {score}.")
         except NotExistingWordException as e:
