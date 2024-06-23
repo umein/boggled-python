@@ -100,39 +100,42 @@ class PlayerClient:
 
     #start game function
     def start_game(self):
-        self.remaining_time = self.player_service.waitingLobby(int(self.loggedinuser['playerid']))
-        print(f"REMAINING TIME: {self.remaining_time} secs")
-        self.people_in_lobby = self.player_service.getLobbySize()
-        print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
-
-        while self.remaining_time > 0:
-            old_time = self.remaining_time
-            curr_players = self.people_in_lobby
-
+        try:
             self.remaining_time = self.player_service.waitingLobby(int(self.loggedinuser['playerid']))
+            print(f"REMAINING TIME: {self.remaining_time} secs")
             self.people_in_lobby = self.player_service.getLobbySize()
+            print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
 
-            if old_time!= self.remaining_time:
-                print(f"REMAINING TIME: {self.remaining_time} secs")
+            while self.remaining_time != 0:
+                old_time = self.remaining_time
+                curr_players = self.people_in_lobby
 
-            if self.people_in_lobby!= curr_players:
-                print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
+                self.remaining_time = self.player_service.waitingLobby(int(self.loggedinuser['playerid']))
+                self.people_in_lobby = self.player_service.getLobbySize()
 
-            time.sleep(1)
+                if old_time != self.remaining_time:
+                    print(f"REMAINING TIME: {self.remaining_time} secs")
 
-        if self.people_in_lobby < 2:
-            raise NotEnoughPlayersException("Not enough players to start the game")
+                if self.people_in_lobby != curr_players:
+                    print(f"CURRENT PLAYERS IN LOBBY: {self.people_in_lobby}")
 
-        self.round_number = 1
-        print("Attempting to start the game...")
-        self.player_service.startGame(self.loggedinuser['playerid'])
-        self.play_round()
-
-        while not self.game_has_winner():
+            if self.people_in_lobby < 2:
+                raise NotEnoughPlayersException("Not enough players to start the game")
+                
+            self.round_number = 1
+            print("Attempting to start the game...")
+            self.player_service.startGame(self.loggedinuser['playerid'])
             self.play_round()
 
-        print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
-        self.exit_game()
+            while not self.game_has_winner():
+                self.play_round()
+
+            print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
+            self.exit_game()
+
+        except NotEnoughPlayersException as e:
+            print(f"Error: {e.message}")
+            return -1 
 
     def play_round(self):
         try:
