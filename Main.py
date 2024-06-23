@@ -232,13 +232,13 @@ class PlayerClient:
     def submit_word(self, word):
         try:
             score = self.player_service.submitWords(self.loggedinuser.playerid, word)
-            print(f"Word '{word}' sent successfully! Your score is {score}.")
+            print (f"Word '{word}' sent successfully! Your score is {score}.")
         except NotExistingWordException as e:
-            print(f"Error: {e}")
+            print (f"Error: {e}")
         except GameNotFoundException as e:
-            print(f"Error: {e}")
+            print (f"Error: {e}")
         except Exception as e:
-            print(f"An error occurred: {e}")
+            print (f"An error occurred: {e}")
 
     # game winner function
     def game_has_winner(self):
