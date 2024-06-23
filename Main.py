@@ -250,10 +250,10 @@ class PlayerClient:
                 self.game_winner = player_data
                 return True
         except GameNotFoundException as ex:
-            print ("Game not found:", ex)
+            print("Game not found:", ex)
             return False
         except Exception as e:
-            print ("An error occurred while checking for a game winner:", e)
+            print("An error occurred while checking for a game winner:", e)
             return False
 
     # exit game function
