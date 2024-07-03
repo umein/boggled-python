@@ -71,7 +71,8 @@ class PlayerClient:
                 print("Leaderboard is empty")
             else:
                 print("Leaderboard:")
-                for player in leaderboard.players:
+                top_players = leaderboard.players[:5]
+                for player in top_players:
                     print(f"Player: {player.username}, Score: {player.score}")
         except Exception as e:
             print("An error occurred:", e)
@@ -83,7 +84,7 @@ class PlayerClient:
         try:
             if self.loggedinuser is None:
                 raise UserNotFoundException("No user is currently logged in.")
-            user_details = self.player_service.viewProfile(self.loggedinuser)
+            user_details = self.player_service.viewProfile(int(self.loggedinuser['playerid']))
             
             print(f"Name: {user_details.username}")
             print(f"User ID: {user_details.playerid}")
@@ -131,7 +132,7 @@ class PlayerClient:
                 self.play_round()
 
             print(f"GAME WINNER: {self.game_winner.username} with score {self.game_winner.score}")
-            self.exit_game()
+            self.exit_game() 
 
         except NotEnoughPlayersException as e:
             print(f"Error: {e.message}")
@@ -156,7 +157,7 @@ class PlayerClient:
                 if round_remaining_time == 0:
                     break
 
-                word = input("Enter a word: ")
+                word = input("\nEnter a word: ")
                 self.submit_word(word)
 
                 time.sleep(1)
@@ -228,15 +229,15 @@ class PlayerClient:
                     row.append (' ')  
             grid.append (row)
 
-        print ("+-----------------+-------------------+")
-        print ("|     Letters     |     Words Sent    |")
-        print ("+-----------------+-------------------+")
+        print ("\n+-------------------------+")
+        print ("|         Letters         |")
+        print ("+-------------------------+")
+        print ("|                         |")
         self.sent_words = []
         for i, row in enumerate(grid, 1):
-            letter_str = " ".join(row)
-            word_str = ""
-            print (f"| {letter_str:<15} | {word_str:<15} |")
-        print ("+-----------------+-------------------+")
+            letter_str = "       " + " ".join(row) + "       "
+            print (f"| {letter_str:<20} |")
+        print ("+-------------------------+")
 
     def submit_word(self, word):
         try:
@@ -260,10 +261,10 @@ class PlayerClient:
                 return False
             else:
                 self.game_winner = player_data
+                print(f"\nGame winner: {player_data.username} \nScore: {player_data.score}")
                 return True
         except GameNotFoundException as ex:
-            print("Game not found:", ex)
-            return False
+            return True
         except Exception as e:
             print("An error occurred while checking for a game winner:", e)
             return False
